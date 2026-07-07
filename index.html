@@ -21,9 +21,11 @@
     --chrome-dark:#3A4250;
     --chrome-mid:#9AA3AF;
     --chrome-light:#F6F8F9;
-    --chrome-text:#6C7889;
-    --steel:#45536B;
-    --steel-deep:#2C3746;
+    --chrome-text:#375FD1;
+    --steel:#3B6EF6;
+    --steel-deep:#2748B8;
+    --accent-violet:#8B5CFF;
+    --accent-glow:rgba(59,110,246,.35);
     --shine:rgba(154,163,175,.35);
     --display:'Space Grotesk',sans-serif;
     --body:'Inter',sans-serif;
@@ -127,29 +129,61 @@
     padding:170px 0 110px;
     overflow:hidden;
   }
-  /* ascending metallic bars = signature */
-  .levels-bg{
-    position:absolute;right:-60px;bottom:-40px;
-    display:flex;align-items:flex-end;gap:20px;
-    pointer-events:none;
-    z-index:0;
-  }
-  .levels-bg span{
-    width:60px;border-radius:14px;
-    opacity:.65;
-    background:linear-gradient(180deg,#fff,var(--chrome-mid) 55%,var(--chrome-dark));
-  }
-  .levels-bg span:nth-child(1){height:80px;opacity:.35}
-  .levels-bg span:nth-child(2){height:140px;opacity:.5}
-  .levels-bg span:nth-child(3){height:210px;opacity:.4}
-  .levels-bg span:nth-child(4){height:300px;opacity:.6}
-  @media(max-width:720px){.levels-bg{opacity:.7;right:-70px}}
 
-  .hero-glow{
-    position:absolute;top:-160px;left:50%;transform:translateX(-50%);
-    width:720px;height:720px;
-    background:radial-gradient(circle,var(--shine),transparent 62%);
+  /* animated holographic aura = signature */
+  .hero-aura{
+    position:absolute;inset:0;
     pointer-events:none;z-index:0;
+    filter:blur(50px);
+    transition:transform .2s ease-out;
+  }
+  .aura-blob{position:absolute;border-radius:50%}
+  .aura-blob.b1{
+    width:480px;height:480px;top:-140px;right:-60px;
+    background:radial-gradient(circle at 32% 32%,var(--steel),transparent 70%);
+    opacity:.5;animation:drift1 13s ease-in-out infinite;
+  }
+  .aura-blob.b2{
+    width:380px;height:380px;top:80px;right:260px;
+    background:radial-gradient(circle at 60% 40%,var(--accent-violet),transparent 70%);
+    opacity:.4;animation:drift2 17s ease-in-out infinite;
+  }
+  .aura-blob.b3{
+    width:340px;height:340px;top:240px;right:-30px;
+    background:radial-gradient(circle at 50% 50%,var(--chrome-mid),transparent 70%);
+    opacity:.5;animation:drift3 10s ease-in-out infinite;
+  }
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,30px) scale(1.12)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(34px,-26px) scale(.9)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-24px,-32px) scale(1.08)}}
+  @media(max-width:720px){.hero-aura{opacity:.7}}
+  @media(prefers-reduced-motion:reduce){
+    .aura-blob{animation:none!important}
+    .hero-aura{transform:none!important}
+  }
+
+  /* floating glass chips */
+  .chip-wrap{position:absolute;z-index:2;transition:transform .2s ease-out;pointer-events:none}
+  .chip-wrap.c1{top:14%;right:4%}
+  .chip-wrap.c2{top:56%;right:13%}
+  @media(max-width:900px){.chip-wrap{display:none}}
+  .floating-chip{
+    display:flex;align-items:center;gap:10px;
+    background:linear-gradient(160deg,rgba(24,28,36,.94),rgba(38,44,55,.94));
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:14px;padding:12px 16px;
+    color:#fff;font-size:13px;font-weight:600;white-space:nowrap;
+    box-shadow:0 20px 40px rgba(20,23,28,.22), inset 0 1px 0 rgba(255,255,255,.08);
+    animation:float 6s ease-in-out infinite;
+  }
+  .chip-wrap.c2 .floating-chip{animation-delay:-3s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @media(prefers-reduced-motion:reduce){.floating-chip{animation:none}}
+  .chip-icon{
+    width:26px;height:26px;border-radius:8px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--steel),var(--accent-violet));
+    box-shadow:0 0 12px var(--accent-glow);
   }
 
   .hero-content{position:relative;z-index:2;max-width:760px}
@@ -179,7 +213,7 @@
     box-shadow:0 8px 24px rgba(20,23,28,.14), inset 0 1px 0 rgba(255,255,255,.9);
     transition:transform .2s, box-shadow .2s, background-position .5s;
   }
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(20,23,28,.2), inset 0 1px 0 rgba(255,255,255,.9);background-position:100% 0}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,.9);background-position:100% 0}
   .btn-primary .arrow{transition:transform .2s}
   .btn-primary:hover .arrow{transform:translateX(4px)}
   .btn-ghost{
@@ -348,9 +382,14 @@
   </div>
 </nav>
 
-<header>
-  <div class="hero-glow"></div>
-  <div class="levels-bg"><span></span><span></span><span></span><span></span></div>
+<header id="hero">
+  <div class="hero-aura" id="heroAura">
+    <div class="aura-blob b1"></div>
+    <div class="aura-blob b2"></div>
+    <div class="aura-blob b3"></div>
+  </div>
+  <div class="chip-wrap c1" id="chip1"><div class="floating-chip"><span class="chip-icon"></span>1:1 Live-Call</div></div>
+  <div class="chip-wrap c2" id="chip2"><div class="floating-chip"><span class="chip-icon"></span>Klarheit in 45 Min</div></div>
   <div class="wrap">
     <div class="hero-content">
       <span class="eyebrow">1:1 Coaching</span>
@@ -546,6 +585,28 @@
       if(!open){ item.classList.add('open'); answer.style.maxHeight=answer.scrollHeight+'px'; }
     });
   });
+
+  // Hero-Parallax (Aura + Chips folgen der Maus leicht)
+  const heroEl = document.getElementById('hero');
+  const aura = document.getElementById('heroAura');
+  const chip1 = document.getElementById('chip1');
+  const chip2 = document.getElementById('chip2');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (heroEl && !reduceMotion) {
+    heroEl.addEventListener('mousemove', (e) => {
+      const r = heroEl.getBoundingClientRect();
+      const mx = (e.clientX - r.left) / r.width - 0.5;
+      const my = (e.clientY - r.top) / r.height - 0.5;
+      aura.style.transform = `translate(${mx * 30}px, ${my * 30}px)`;
+      chip1.style.transform = `translate(${mx * -18}px, ${my * -14}px)`;
+      chip2.style.transform = `translate(${mx * -24}px, ${my * -18}px)`;
+    });
+    heroEl.addEventListener('mouseleave', () => {
+      aura.style.transform = '';
+      chip1.style.transform = '';
+      chip2.style.transform = '';
+    });
+  }
 
   // Nav bei Scroll leicht ausblenden nach unten / einblenden nach oben
   let lastY=0;
